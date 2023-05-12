@@ -22,9 +22,9 @@ class BaseModel:
                         setattr(self, key, datetime.fromisoformat(value))
                     else:
                         setattr(self, key, value)
-                        
+
     def __str__(self):
-        """Retirns the string representation of the object"""
+        """Returns the string representation of the object"""
         return f"[{type(self).__name__}] ({self.id}) {self.__dict__}"
     
     #public instance methods
