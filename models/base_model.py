@@ -17,7 +17,7 @@ class BaseModel:
             self.updated_at = datetime.now()
         else:
             for key, value in kwargs.items():
-                if key is not '__class__':
+                if key != '__class__':
                     if key in ('created_at', 'updated_at'):
                         setattr(self, key, datetime.fromisoformat(value))
                     else:

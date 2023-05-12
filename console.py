@@ -7,20 +7,13 @@ from shlex import split
 import models
 from models.base_model import BaseModel
 
-#Write a program called console.py that contains the entry point of the command interpreter:
-#You must use the module cmd
-#Your class definition must be: class HBNBCommand(cmd.Cmd):
-#Your command interpreter should implement:
-#quit and EOF to exit the program
-#help (this action is provided by default by cmd but you should keep it updated and documented as you work through tasks)
-#a custom prompt: (hbnb)
-#an empty line + ENTER shouldn’t execute anything
-#Your code should not be executed when imported
+CLASSES = [
+    "BaseModel",
+]
 
-#Your code should be able to import the hbnb module
 class HBNBCommand(cmd.Cmd):
-    prompt = '(hbnb)'
-
+    prompt = "(hbnb)"
+    storage = models.Storage
     def do_quit(self, arg):
         """Exit the program"""
         return True
