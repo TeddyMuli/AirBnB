@@ -15,7 +15,14 @@ class BaseModel:
             self.id = str(uuid4)
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
-        
+        else:
+            for key, value in kwargs.items():
+                if key is not '__class__':
+                    if key in ('created_at', 'updated_at'):
+                        setattr(self, key, datetime.fromisoformat(value))
+                    else:
+                        setattr(self, key, value)
+                        
     def __str__(self):
         """Retirns the string representation of the object"""
         return f"[{type(self).__name__}] ({self.id}) {self.__dict__}"
@@ -32,3 +39,4 @@ class BaseModel:
         object['created_at'] = self.created_at.isoformat()
         object['updated_at'] = self.updated_at.isoformat()
         return object
+    
