@@ -10,7 +10,7 @@ class BaseModel:
     def __init__(self, *args, **kwargs):
         """The constructor"""
 
-        #from models import storage
+        from models import dbase
         if not kwargs:
             self.id = str(uuid4)
             self.created_at = datetime.now()
