@@ -17,11 +17,12 @@ class BaseModel:
         Initialize the BaseModel class
         """
 
-        from models import storage
+        from models import d_base
         if not kwargs:
             self.id = str(uuid4())
-            self.created_at = self.updated_at = datetime.now()
-            storage.new(self)
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
+            d_base.new(self)
         else:
             for key, value in kwargs.items():
                 if key != '__class__':
@@ -35,16 +36,15 @@ class BaseModel:
         Returns the string representation of BaseModel object.
         [<class name>] (<self.id>) <self.__dict__>
         """
-        return "[{}] ({}) {}".format(type(self).__name__, self.id,
-                                     self.__dict__)
+        return "[{}] ({}) {}".format(type(self).__name__, self.id, self.__dict__)
 
     def save(self):
         """
         Updates 'self.updated_at' with the current datetime
         """
-        from models import storage
+        from models import d_base
         self.updated_at = datetime.now()
-        storage.save()
+        d_base.save()
 
     def to_dict(self):
         """
@@ -58,8 +58,8 @@ class BaseModel:
         """
         dict_1 = self.__dict__.copy()
         dict_1["__class__"] = self.__class__.__name__
-        for k, v in self.__dict__.items():
-            if k in ("created_at", "updated_at"):
-                v = self.__dict__[k].isoformat()
-                dict_1[k] = v
+        for i, j in self.__dict__.items():
+            if i in ("created_at", "updated_at"):
+                j = self.__dict__[i].isoformat()
+                dict_1[i] = j
         return dict_1

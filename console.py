@@ -67,7 +67,7 @@ class HBNBCommand(cmd.Cmd):
     for the AirBnB clone web application
     """
     prompt = "(hbnb) "
-    storage = models.storage
+    storage = models.d_base
 
     def emptyline(self):
         """Command to executed when empty line + <ENTER> key"""
