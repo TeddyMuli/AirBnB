@@ -8,7 +8,7 @@ import models
 from models.base_model import BaseModel
 
 CLASSES = [
-    "BaseModel",
+    "BaseModel"
 ]
 
 def parse(arg):
@@ -79,13 +79,6 @@ class HBNBCommand(cmd.Cmd):
                 if command[0] in action_map:
                     call = "{} {}".format(arg1[0], command[1])
                     return action_map[command[0]](call)
-
-            print("*** Unknown syntax: {}".format(arg))
-            return False
-        args_list = parse(arg)
-        if len(args_list) == 0:
-            print("** class name missing **")
-            return False
 
         print("*** Unknown syntax: {}".format(arg))
         return False
