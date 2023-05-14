@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 """
-__init__ for methods
+__init__ dunder method for the models directory
 """
-
 from models.engine.file_storage import FileStorage
 
-dbase = FileStorage()
-dbase.reload
+
+storage = FileStorage()
+storage.reload()
