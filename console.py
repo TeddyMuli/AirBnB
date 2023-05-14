@@ -18,15 +18,15 @@ def parse(arg):
         if brackets is None:
             return [i.strip(",") for i in split(arg)]
         else:
-            lex = split(arg[:brackets.span()[0]])
-            rl = [i.strip(",") for i in lex]
-            rl.append(brackets.group())
-            return rl
+            lexer = split(arg[:brackets.span()[0]])
+            retl = [i.strip(",") for i in lexer]
+            retl.append(brackets.group())
+            return retl
     else:
-        lex = split(arg[:curly_braces.span()[0]])
-        rl = [i.strip(",") for i in lex]
-        rl.append(curly_braces.group())
-        return rl
+        lexer = split(arg[:curly_braces.span()[0]])
+        retl = [i.strip(",") for i in lexer]
+        retl.append(curly_braces.group())
+        return retl
 
 
 def check_args(args):
@@ -38,14 +38,14 @@ def check_args(args):
     Returns:
         Error message if args is None or not a valid class, else the arguments
     """
-    arg_list = parse(args)
+    args_list = parse(args)
 
-    if len(arg_list) == 0:
+    if len(args_list) == 0:
         print("** class name missing **")
-    elif arg_list[0] not in CLASSES:
+    elif args_list[0] not in CLASSES:
         print("** class doesn't exist **")
     else:
-        return arg_list
+        return args_list
 
 
 class HBNBCommand(cmd.Cmd):
@@ -62,12 +62,12 @@ class HBNBCommand(cmd.Cmd):
     def default(self, arg):
         """Default behaviour for cmd module when input is invalid"""
         action_map = {
-            "all": self.all,
-            "show": self.show,
-            "destroy": self.destroy,
-            "count": self.count,
-            "update": self.update,
-            "create": self.create
+            "all": self.hb_all,
+            "show": self.hb_show,
+            "destroy": self.hb_destroy,
+            "count": self.hb_count,
+            "update": self.hb_update,
+            "create": self.hb_create
         }
 
         match = re.search(r"\.", arg)
@@ -80,27 +80,34 @@ class HBNBCommand(cmd.Cmd):
                     call = "{} {}".format(arg1[0], command[1])
                     return action_map[command[0]](call)
 
+            print("*** Unknown syntax: {}".format(arg))
+            return False
+        args_list = parse(arg)
+        if len(args_list) == 0:
+            print("** class name missing **")
+            return False
+
         print("*** Unknown syntax: {}".format(arg))
         return False
-
-    def EOF(self, argv):
+    
+    def hb_EOF(self, argv):
         """EOF signal to exit the program"""
         print("")
         return True
 
-    def quit(self, argv):
+    def hb_quit(self, argv):
         """When executed, exits the console."""
         return True
 
-    def create(self, argv):
+    def hb_create(self, argv):
         """Creates a new instance of BaseModel, saves it (to a JSON file)
         and prints the id"""
         args = check_args(argv)
         if args:
             print(eval(args[0])().id)
-            #self.dbase.save()
+            self.dbase.save()
 
-    def show(self, argv):
+    def hb_show(self, argv):
         """Prints the string representation of an instance based
         on the class name and id"""
         args = check_args(argv)
@@ -114,7 +121,7 @@ class HBNBCommand(cmd.Cmd):
                 else:
                     print(self.dbase.all()[key])
 
-    def all(self, argv):
+    def hb_all(self, argv):
         """Prints all string representation of all instances based or not
         based on the class name"""
         arg_list = split(argv)
@@ -128,7 +135,7 @@ class HBNBCommand(cmd.Cmd):
                 print([str(obj) for obj in objects
                        if arg_list[0] in str(obj)])
 
-    def destroy(self, argv):
+    def hb_destroy(self, argv):
         """Delete a class instance based on the name and given id."""
         arg_list = check_args(argv)
         if arg_list:
@@ -142,7 +149,7 @@ class HBNBCommand(cmd.Cmd):
                 else:
                     print("** no instance found **")
 
-    def update(self, argv):
+    def hb_update(self, argv):
         """Updates an instance based on the class name and id by adding or
         updating attribute and save it to the JSON file."""
         arg_list = check_args(argv)
@@ -157,27 +164,26 @@ class HBNBCommand(cmd.Cmd):
                     elif len(arg_list) == 3:
                         print("** value missing **")
                     else:
-                        obj = self.dbase.all()[instance_id]
-                        if arg_list[2] in type(obj).__dict__:
-                            v_type = type(obj.__class__.__dict__[arg_list[2]])
-                            setattr(obj, arg_list[2], v_type(arg_list[3]))
+                        object = self.dbase.all()[instance_id]
+                        if arg_list[2] in type(object).__dict__:
+                            v_type = type(object.__class__.__dict__[arg_list[2]])
+                            setattr(object, arg_list[2], v_type(arg_list[3]))
                         else:
-                            setattr(obj, arg_list[2], arg_list[3])
+                            setattr(object, arg_list[2], arg_list[3])
                 else:
                     print("** no instance found **")
 
             self.dbase.save()
 
-    def count(self, arg):
+    def hb_count(self, arg):
         """Retrieve the number of instances of a class"""
         arg1 = parse(arg)
         count = 0
-        for obj in models.dbase.all().values():
-            if arg1[0] == type(obj).__name__:
+        for object in models.dbase.all().values():
+            if arg1[0] == type(object).__name__:
                 count += 1
         print(count)
 
 
-if __name__ == 'main':
+if __name__ == '__main__':
     HBNBCommand().cmdloop()
-
